@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "156350353897",
+    "project_id": "noctua-uca-a2cf1",
+    "storage_bucket": "noctua-uca-a2cf1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156350353897:android:2d12784e522eebaca73b78",
+        "android_client_info": {
+          "package_name": "com.castroll.noctua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156350353897-chll4qrqph39rnh30s0av3cr549mmn1f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.castroll.noctua",
+            "certificate_hash": "c8dbd21e0d55995829d223b0dea26c86c2bf66da"
+          }
+        },
+        {
+          "client_id": "156350353897-vl687deajh3a2f64k5f50oiaqusc8bnk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBILyY3RzHVlzjzRxBnCbqyvAtpDQNqHM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156350353897-vl687deajh3a2f64k5f50oiaqusc8bnk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

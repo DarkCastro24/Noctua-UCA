@@ -67,6 +67,16 @@ fun PensumContent(userViewModel: UserViewModel) {
     val currentSubjects = user?.currentSubjects?.flatMap { it.split(",").map(String::trim).filter { it.isNotEmpty() } } ?: emptyList()
     val approvedSubjects = allSubjects
 
+    val allSubjectsGrades: List<Double> = user?.allSubjectsGrades?.mapNotNull {
+        (it as? Number)?.toDouble() ?: it.toString().toDoubleOrNull()
+    } ?: emptyList()
+
+    val cum = if (allSubjectsGrades.isNotEmpty()) {
+        allSubjectsGrades.sum() / allSubjectsGrades.size
+    } else {
+        0.0
+    }
+
     // Remove current subject effect
     LaunchedEffect(subjectToRemove.value) {
         subjectToRemove.value?.let { subject ->
@@ -119,7 +129,7 @@ fun PensumContent(userViewModel: UserViewModel) {
         )
 
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "PENSUM", style = MaterialTheme.typography.headlineMedium.copy(color = Color(0xFF001F3F)))
+            Text(text = "PROGRESO EN: ${user?.career}", style = MaterialTheme.typography.headlineMedium.copy(color = Color(0xFF001F3F)))
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -127,13 +137,14 @@ fun PensumContent(userViewModel: UserViewModel) {
             val aprobadasMaterias = approvedSubjects.size
             val avance = if (totalMaterias != 0) (aprobadasMaterias * 100) / totalMaterias else 0
 
-            Text(text = "Progreso en la carrera: ${user?.career}", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Materias totales/aprobadas: $totalMaterias/$aprobadasMaterias", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Avance en la carrera: $avance%", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Porcentaje de avance en la carrera: $avance%", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Num materias actuales: ${currentSubjects.size}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Materias en curso: ${currentSubjects.size}", style = MaterialTheme.typography.bodySmall)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "CUM de la carrera: ${String.format("%.2f", cum)}", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -220,7 +231,7 @@ fun PensumContent(userViewModel: UserViewModel) {
                                         else -> Color.Black
                                     }
                                     Text(
-                                        text = materia.nombre,
+                                        text = "${materia.nombre} - ${materia.uv} UV",
                                         color = color,
                                         style = MaterialTheme.typography.bodySmall,
                                         modifier = Modifier.padding(bottom = 4.dp)
@@ -418,7 +429,5 @@ fun groupBySubjects(materias: List<Materia>): Map<Int, List<Materia>> {
     return materias.groupBy { it.ciclo }
 }
 
-fun showToast(context: Context, message: String) {
-    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-}
+
 

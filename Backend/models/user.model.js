@@ -52,6 +52,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true
     }],
+    allSubjectsGrades: [{
+        type: mongoose.Schema.Types.Decimal128,
+        trim: true,
+        default: 0.0
+    }],
     hashedPassword: {
         type: String
     },

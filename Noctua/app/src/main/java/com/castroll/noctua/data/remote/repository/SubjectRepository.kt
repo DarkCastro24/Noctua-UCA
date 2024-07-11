@@ -1,32 +1,32 @@
 package com.castroll.noctua.data.remote.repository
 
-data class Materia(val id: Int, val nombre: String, val ciclo: Int)
+data class Materia(val id: Int, val nombre: String, val ciclo: Int, val uv: Int = 4)
 
 fun obtenerMateriasInformatica(): List<Materia> {
     return listOf(
         Materia(1, "Precalculo", 1),
-        Materia(2, "Optativa tecnica I", 1),
+        Materia(2, "EECYT", 1),
         Materia(3, "Matematica discreta I", 1),
         Materia(4, "Fundamentos de programacion", 1),
         Materia(5, "Algebra vectorial y matrices", 2),
         Materia(6, "Calculo I", 2),
         Materia(7, "Programacion de estructuras dinamicas", 2),
         Materia(8, "Matematica discreta II", 2),
-        Materia(9, "Fisica I", 3),
+        Materia(9, "Fisica I", 3, 5),
         Materia(10, "Calculo II", 3),
         Materia(11, "Programacion orientada a objetos", 3),
         Materia(12, "Bases de datos", 3),
-        Materia(13, "Electricidad y magnetismo", 4),
+        Materia(13, "Electricidad y magnetismo", 4, 5),
         Materia(14, "Calculo III", 4),
         Materia(15, "Programacion web", 4),
         Materia(16, "Administracion de bases de datos", 4),
-        Materia(17, "Optativa humanistico-social I", 4),
+        Materia(17, "Optativa humanistico-social I", 4, 3),
         Materia(18, "Analisis numerico", 5),
         Materia(19, "Redes de computadoras", 5),
         Materia(20, "Programacion de dispositivos moviles", 5),
-        Materia(21, "Analisis de sistemas", 5),
-        Materia(22, "Fisica II", 5),
-        Materia(23, "Optativa humanistico-social II", 6),
+        Materia(21, "Analisis de sistemas", 5, 3),
+        Materia(22, "Fisica II", 5, 5),
+        Materia(23, "Optativa humanistico-social II", 6, 3),
         Materia(24, "Analisis de algoritmos", 6),
         Materia(25, "Programacion de artefactos", 6),
         Materia(26, "Probabilidad y estadistica", 6),
@@ -35,19 +35,19 @@ fun obtenerMateriasInformatica(): List<Materia> {
         Materia(29, "Tecnicas de simulacion en computadoras", 7),
         Materia(30, "Programacion n-capas", 7),
         Materia(31, "Fundamentos de inteligencia de negocios", 7),
-        Materia(32, "Optativa humanistico-social III", 7),
+        Materia(32, "Optativa humanistico-social III", 7, 3),
         Materia(33, "Sistemas operativos", 8),
         Materia(34, "Programacion declarativa", 8),
         Materia(35, "Ingenieria de software", 8),
         Materia(36, "Formulacion y evaluacion de proyectos", 8),
-        Materia(37, "Optativa humanistico-social IV", 9),
-        Materia(38, "Optativa tecnica II", 9),
+        Materia(37, "Optativa humanistico-social IV", 9, 3),
+        Materia(38, "Optativa tecnica II", 9, 3),
         Materia(39, "Aplicaciones codigo abierto", 9),
         Materia(40, "Practica profesional I", 9),
-        Materia(41, "Optativa tecnica III", 10),
+        Materia(41, "Optativa tecnica III", 10, 3),
         Materia(42, "Teoria de lenguajes de programacion", 10),
         Materia(43, "Practica profesional II", 10),
-        Materia(44, "Optativa humanistico-social V", 10)
+        Materia(44, "Optativa humanistico-social V", 10, 3)
     )
 }
 

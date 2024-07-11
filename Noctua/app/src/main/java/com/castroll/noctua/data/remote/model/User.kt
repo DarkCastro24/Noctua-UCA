@@ -12,6 +12,7 @@ data class User(
     val type: Int,
     val currentSubjects: List<String>,
     val allSubjects: List<String>,
+    val allSubjectsGrades: List<Double>,
     val createdAt: String,
     val updatedAt: String,
     val biography: String,

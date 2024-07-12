@@ -100,9 +100,7 @@ class UserViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let { updatedUser ->
                         setUser(updatedUser)
-                    } ?: run {
                     }
-                } else {
                 }
             } catch (e: Exception) {
             }
@@ -120,15 +118,33 @@ class UserViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let { updatedUser ->
                         setUser(updatedUser)
-                    } ?: run {
                     }
-                } else {
+                }
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+    fun updateAllSubjectsGrades(newGrades: List<Double>) {
+        viewModelScope.launch {
+            val currentUser = user.value ?: return@launch
+            val updatedFields = newGrades.mapIndexed { index, grade ->
+                "allSubjectsGrades[$index]" to grade.toString()
+            }.toMap()
+
+            try {
+                val response = RetrofitInstance.userApi.updateUser(currentUser._id, updatedFields)
+                if (response.isSuccessful) {
+                    response.body()?.let { updatedUser ->
+                        setUser(updatedUser)
+                    }
                 }
             } catch (e: Exception) {
             }
         }
     }
 }
+
 
 
 

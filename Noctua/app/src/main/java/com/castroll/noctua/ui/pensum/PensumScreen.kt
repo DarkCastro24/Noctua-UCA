@@ -3,12 +3,12 @@ package com.castroll.noctua.ui.pensum
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -45,9 +45,10 @@ fun PensumContent(userViewModel: UserViewModel) {
     val subjectToRemove = remember { mutableStateOf<String?>(null) }
     val subjectToComplete = remember { mutableStateOf<String?>(null) }
     val totalSubjectToRemove = remember { mutableStateOf<String?>(null) }
-    val subjectToApprove = remember { mutableStateOf<String?>(null) }
+    val subjectToApprove = remember { mutableStateOf<Pair<String, Double>?>(null) }
     val showRemoveConfirmationDialog = remember { mutableStateOf(false) }
     val subjectToConfirmRemove = remember { mutableStateOf<String?>(null) }
+    val isCurrentSubject = remember { mutableStateOf(true) }
 
     // Fetch subjects based on the user's career
     val materias = when (user?.career) {
@@ -67,12 +68,29 @@ fun PensumContent(userViewModel: UserViewModel) {
     val currentSubjects = user?.currentSubjects?.flatMap { it.split(",").map(String::trim).filter { it.isNotEmpty() } } ?: emptyList()
     val approvedSubjects = allSubjects
 
-    val allSubjectsGrades: List<Double> = user?.allSubjectsGrades?.mapNotNull {
-        (it as? Number)?.toDouble() ?: it.toString().toDoubleOrNull()
-    } ?: emptyList()
+    // Ensure allSubjectsGrades is a List<Double>
+    val allSubjectsGrades: List<Double> = approvedSubjects.mapNotNull {
+        it.split(" - ").getOrNull(1)?.toDoubleOrNull()
+    }
 
-    val cum = if (allSubjectsGrades.isNotEmpty()) {
-        allSubjectsGrades.sum() / allSubjectsGrades.size
+    // Calculate Total Units and Total Merit Units
+    val totalUnits = approvedSubjects.mapNotNull {
+        val parts = it.split(" - ")
+        val subjectName = parts[0]
+        val uv = materias.find { m -> m.nombre == subjectName }?.uv
+        uv
+    }.sum()
+
+    val totalMeritUnits = approvedSubjects.mapNotNull {
+        val parts = it.split(" - ")
+        val subjectName = parts[0]
+        val grade = parts.getOrNull(1)?.toDoubleOrNull()
+        val uv = materias.find { m -> m.nombre == subjectName }?.uv
+        if (grade != null && uv != null) grade * uv else null
+    }.sum()
+
+    val cum = if (totalUnits != 0) {
+        totalMeritUnits / totalUnits
     } else {
         0.0
     }
@@ -80,17 +98,12 @@ fun PensumContent(userViewModel: UserViewModel) {
     // Remove current subject effect
     LaunchedEffect(subjectToRemove.value) {
         subjectToRemove.value?.let { subject ->
-            userViewModel.updateCurrentSubjects(currentSubjects.toMutableList().apply { remove(subject) }.joinToString(", "))
+            if (isCurrentSubject.value) {
+                userViewModel.updateCurrentSubjects(currentSubjects.toMutableList().apply { remove(subject) }.joinToString(", "))
+            } else {
+                userViewModel.updateAllSubjects(allSubjects.toMutableList().apply { remove(subject) }.joinToString(", "))
+            }
             subjectToRemove.value = null
-            showToast(context, "Materia eliminada: $subject")
-        }
-    }
-
-    // Remove total subject effect
-    LaunchedEffect(totalSubjectToRemove.value) {
-        totalSubjectToRemove.value?.let { subject ->
-            userViewModel.updateAllSubjects(allSubjects.toMutableList().apply { remove(subject) }.joinToString(", "))
-            totalSubjectToRemove.value = null
             showToast(context, "Materia eliminada: $subject")
         }
     }
@@ -110,13 +123,13 @@ fun PensumContent(userViewModel: UserViewModel) {
 
     // Approve current subject effect
     LaunchedEffect(subjectToApprove.value) {
-        subjectToApprove.value?.let { subject ->
+        subjectToApprove.value?.let { (subject, grade) ->
             val updatedCurrentSubjects = currentSubjects.toMutableList().apply { remove(subject) }
-            val updatedAllSubjects = allSubjects.toMutableList().apply { add(subject) }
+            val updatedAllSubjects = allSubjects.toMutableList().apply { add("$subject - $grade") }
             userViewModel.updateCurrentSubjects(updatedCurrentSubjects.joinToString(", "))
             userViewModel.updateAllSubjects(updatedAllSubjects.joinToString(", "))
             subjectToApprove.value = null
-            showToast(context, "Materia aprobada: $subject")
+            showToast(context, "Materia aprobada: $subject con nota $grade")
         }
     }
 
@@ -140,9 +153,9 @@ fun PensumContent(userViewModel: UserViewModel) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Materias totales/aprobadas: $totalMaterias/$aprobadasMaterias", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Porcentaje de avance en la carrera: $avance%", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Avance en la carrera: $avance%", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Materias en curso: ${currentSubjects.size}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Num materias actuales: ${currentSubjects.size}", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "CUM de la carrera: ${String.format("%.2f", cum)}", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(16.dp))
@@ -223,8 +236,8 @@ fun PensumContent(userViewModel: UserViewModel) {
                                     )
                                 }
                                 materias.sortedBy { it.nombre }.forEach { materia ->
-                                    val isCompleted = approvedSubjects.contains(materia.nombre)
-                                    val isCurrent = currentSubjects.contains(materia.nombre)
+                                    val isCompleted = approvedSubjects.any { it.split(" - ")[0] == materia.nombre }
+                                    val isCurrent = currentSubjects.any { it.split(" - ")[0] == materia.nombre }
                                     val color = when {
                                         isCompleted -> Color.Blue
                                         isCurrent -> Color(0xFF5c6972)
@@ -246,16 +259,17 @@ fun PensumContent(userViewModel: UserViewModel) {
     }
 
     if (showCurrentSubjectsDialog.value) {
-        SubjectListDialog(
-            title = "Materias en curso",
-            subjects = currentSubjects,
+        CurrentSubjectsDialog(
+            currentSubjects = currentSubjects,
             onDismissRequest = { showCurrentSubjectsDialog.value = false },
             onRemoveSubject = { subject ->
                 subjectToConfirmRemove.value = subject
+                isCurrentSubject.value = true
                 showRemoveConfirmationDialog.value = true
             },
-            onApproveSubject = { subject ->
-                subjectToApprove.value = subject
+            onApproveSubject = { subject, grade ->
+                userViewModel.updateCurrentSubjects(currentSubjects.toMutableList().apply { remove(subject) }.joinToString(", "))
+                subjectToApprove.value = subject to grade
             }
         )
     }
@@ -267,6 +281,7 @@ fun PensumContent(userViewModel: UserViewModel) {
             onDismissRequest = { showTotalSubjectsDialog.value = false },
             onRemoveSubject = { subject ->
                 subjectToConfirmRemove.value = subject
+                isCurrentSubject.value = false
                 showRemoveConfirmationDialog.value = true
             }
         )
@@ -274,14 +289,16 @@ fun PensumContent(userViewModel: UserViewModel) {
 
     if (showAddSubjectsDialog.value) {
         AddSubjectsDialog(
-            allSubjects = materias.filterNot { it.nombre in currentSubjects || it.nombre in allSubjects },
+            allSubjects = materias,
+            currentSubjects = currentSubjects,
+            approvedSubjects = approvedSubjects,
             onDismissRequest = { showAddSubjectsDialog.value = false },
             onAddCurrentSubject = { subject ->
                 if (currentSubjects.size < 6) {
                     userViewModel.updateCurrentSubjects(currentSubjects.toMutableList().apply { add(subject) }.joinToString(", "))
-                    showToast(context, "Materia agregada a materias actuales: $subject")
+                    showToast(context, "Materia agregada: $subject")
                 } else {
-                    showToast(context, "No puede llevar más de 6 materias en el ciclo")
+                    showToast(context, "El número máximo de materias por ciclo es 6")
                 }
             }
         )
@@ -291,9 +308,9 @@ fun PensumContent(userViewModel: UserViewModel) {
         ConfirmRemoveDialog(
             subject = subjectToConfirmRemove.value,
             onConfirm = {
-                if (currentSubjects.contains(it)) {
+                if (isCurrentSubject.value) {
                     subjectToRemove.value = it
-                } else if (allSubjects.contains(it)) {
+                } else {
                     totalSubjectToRemove.value = it
                 }
                 showRemoveConfirmationDialog.value = false
@@ -306,16 +323,82 @@ fun PensumContent(userViewModel: UserViewModel) {
 }
 
 @Composable
+fun CurrentSubjectsDialog(
+    currentSubjects: List<String>,
+    onDismissRequest: () -> Unit,
+    onRemoveSubject: (String) -> Unit,
+    onApproveSubject: (String, Double) -> Unit
+) {
+    val subjectGrades = remember { mutableStateMapOf<String, String>() }
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = { Text("Materias en curso", style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold)) },
+        text = {
+            if (currentSubjects.isEmpty()) {
+                Text("No hay materias en curso", style = MaterialTheme.typography.bodySmall)
+            } else {
+                LazyColumn {
+                    items(currentSubjects) { subject ->
+                        var grade by remember { mutableStateOf(subjectGrades[subject] ?: "") }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        ) {
+                            Text(subject, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                            TextField(
+                                value = grade,
+                                onValueChange = {
+                                    grade = it
+                                    subjectGrades[subject] = it
+                                },
+                                label = { Text("Nota", style = MaterialTheme.typography.bodySmall) },
+                                modifier = Modifier.width(80.dp)
+                            )
+                            IconButton(onClick = {
+                                val gradeValue = grade.toDoubleOrNull() ?: 0.0
+                                onApproveSubject(subject, gradeValue)
+                                subjectGrades[subject] = "" // Clear the grade
+                            }) {
+                                Icon(Icons.Default.Check, contentDescription = "Aprobar materia")
+                            }
+                            IconButton(onClick = { onRemoveSubject(subject) }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Eliminar materia")
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismissRequest, modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(16.dp)) {
+                Text("Cerrar", style = MaterialTheme.typography.bodySmall)
+            }
+        }
+    )
+}
+
+@Composable
 fun AddSubjectsDialog(
     allSubjects: List<Materia>,
+    currentSubjects: List<String>,
+    approvedSubjects: List<String>,
     onDismissRequest: () -> Unit,
     onAddCurrentSubject: (String) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    val availableSubjects = allSubjects.filterNot { materia ->
+        val materiaName = materia.nombre
+        currentSubjects.any { it.split(" - ")[0] == materiaName } || approvedSubjects.any { it.split(" - ")[0] == materiaName }
+    }
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text("Agregar materia a cursar", style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold)) },
+        title = { Text("Seleccionar materias en curso", style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold)) },
         text = {
             Column {
                 TextField(
@@ -325,7 +408,7 @@ fun AddSubjectsDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                val filteredSubjects = allSubjects.filter { it.nombre.contains(searchQuery, ignoreCase = true) }
+                val filteredSubjects = availableSubjects.filter { it.nombre.contains(searchQuery, ignoreCase = true) }
                 if (filteredSubjects.isEmpty()) {
                     Text("No hay materias disponibles", style = MaterialTheme.typography.bodySmall)
                 } else {
@@ -336,11 +419,17 @@ fun AddSubjectsDialog(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 4.dp)
+                                    .clickable {
+                                        if (currentSubjects.size < 6) {
+                                            onAddCurrentSubject(materia.nombre)
+                                            showToast(context, "Materia agregada: ${materia.nombre}")
+                                            onDismissRequest()
+                                        } else {
+                                            showToast(context, "El número máximo de materias por ciclo es 6")
+                                        }
+                                    }
                             ) {
                                 Text(materia.nombre, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                                IconButton(onClick = { onAddCurrentSubject(materia.nombre) }) {
-                                    Icon(Icons.Default.Add, contentDescription = "Agregar a Materias Actuales")
-                                }
                             }
                         }
                     }
@@ -360,8 +449,7 @@ fun SubjectListDialog(
     title: String,
     subjects: List<String>,
     onDismissRequest: () -> Unit,
-    onRemoveSubject: ((String) -> Unit)? = null,
-    onApproveSubject: ((String) -> Unit)? = null
+    onRemoveSubject: ((String) -> Unit)? = null
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -372,17 +460,18 @@ fun SubjectListDialog(
             } else {
                 LazyColumn {
                     items(subjects) { subject ->
+                        val parts = subject.split(" - ")
+                        val subjectName = parts[0]
+                        val grade = parts.getOrNull(1)?.toDoubleOrNull()
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
                         ) {
-                            Text(subject, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                            if (onApproveSubject != null) {
-                                IconButton(onClick = { onApproveSubject(subject) }) {
-                                    Icon(Icons.Default.Check, contentDescription = "Aprobar materia")
-                                }
+                            Text(subjectName, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                            if (grade != null && grade != 0.0) {
+                                Text(grade.toString(), style = MaterialTheme.typography.bodySmall)
                             }
                             if (onRemoveSubject != null) {
                                 IconButton(onClick = { onRemoveSubject(subject) }) {
@@ -425,9 +514,14 @@ fun ConfirmRemoveDialog(
     )
 }
 
+fun showToast(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
 fun groupBySubjects(materias: List<Materia>): Map<Int, List<Materia>> {
     return materias.groupBy { it.ciclo }
 }
+
 
 
 

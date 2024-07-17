@@ -311,7 +311,8 @@ fun PensumContent(userViewModel: UserViewModel) {
                 if (isCurrentSubject.value) {
                     subjectToRemove.value = it
                 } else {
-                    totalSubjectToRemove.value = it
+                    val (subjectName, grade) = it.split(" - ")
+                    userViewModel.updateAllSubjects(allSubjects.toMutableList().apply { remove(it) }.joinToString(", "))
                 }
                 showRemoveConfirmationDialog.value = false
             },
@@ -393,7 +394,7 @@ fun AddSubjectsDialog(
 
     val availableSubjects = allSubjects.filterNot { materia ->
         val materiaName = materia.nombre
-        currentSubjects.any { it.split(" - ")[0] == materiaName } || approvedSubjects.any { it.split(" - ")[0] == materiaName }
+        currentSubjects.any { it.split(" - ")[0] == materiaName }
     }
 
     AlertDialog(
@@ -521,6 +522,7 @@ fun showToast(context: Context, message: String) {
 fun groupBySubjects(materias: List<Materia>): Map<Int, List<Materia>> {
     return materias.groupBy { it.ciclo }
 }
+
 
 
 

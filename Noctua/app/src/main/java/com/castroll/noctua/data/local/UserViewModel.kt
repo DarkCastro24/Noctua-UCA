@@ -143,8 +143,37 @@ class UserViewModel : ViewModel() {
             }
         }
     }
-}
 
+    fun removeMateriaFromTotalList(materia: String) {
+        val currentUser = user.value ?: return
+        val updatedMaterias = currentUser.allSubjects.filterNot { it == materia }
+        updateTotalMaterias(updatedMaterias.joinToString(", "))
+    }
+
+    fun addMateriaToTotalList(materia: String) {
+        val currentUser = user.value ?: return
+        val updatedMaterias = currentUser.allSubjects.toMutableList().apply { add(materia) }
+        updateTotalMaterias(updatedMaterias.joinToString(", "))
+    }
+
+    private fun updateTotalMaterias(updatedMaterias: String) {
+        viewModelScope.launch {
+            val currentUser = user.value ?: return@launch
+            val updatedFields = mutableMapOf<String, String>()
+            updatedFields["totalMaterias"] = updatedMaterias
+
+            try {
+                val response = RetrofitInstance.userApi.updateUser(currentUser._id, updatedFields)
+                if (response.isSuccessful) {
+                    response.body()?.let { updatedUser ->
+                        setUser(updatedUser)
+                    }
+                }
+            } catch (e: Exception) {
+            }
+        }
+    }
+}
 
 
 

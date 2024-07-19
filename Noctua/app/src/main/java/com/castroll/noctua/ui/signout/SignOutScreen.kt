@@ -21,7 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,6 +37,7 @@ fun SignOutScreen(
     signOutViewModel: SignOutViewModel = viewModel()
 ) {
     val text by signOutViewModel.text.observeAsState()
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -67,7 +71,7 @@ fun SignOutScreen(
                 ) {
                     Text(
                         text = text ?: "",
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 18.sp),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 18.sp, fontFamily = outfitRegular),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(24.dp))
@@ -80,6 +84,7 @@ fun SignOutScreen(
 
 @Composable
 fun LogoutButton(context: Context, signOutViewModel: SignOutViewModel) {
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
     val errorMessage = remember { mutableStateOf<String?>(null) }
     val showConfirmDialog = remember { mutableStateOf(false) }
 
@@ -95,7 +100,7 @@ fun LogoutButton(context: Context, signOutViewModel: SignOutViewModel) {
             .padding(horizontal = 16.dp)
             .height(56.dp)
     ) {
-        Text(text = "Cerrar sesión", fontSize = 18.sp)
+        Text(text = "Cerrar sesión", fontSize = 18.sp, fontFamily = outfitRegular)
     }
 
     if (showConfirmDialog.value) {
@@ -116,7 +121,7 @@ fun LogoutButton(context: Context, signOutViewModel: SignOutViewModel) {
                     },
                     modifier = Modifier.height(56.dp)
                 ) {
-                    Text("Sí", fontSize = 18.sp)
+                    Text("Sí", fontSize = 18.sp, fontFamily = outfitRegular)
                 }
             },
             dismissButton = {
@@ -124,15 +129,15 @@ fun LogoutButton(context: Context, signOutViewModel: SignOutViewModel) {
                     onClick = { showConfirmDialog.value = false },
                     modifier = Modifier.height(56.dp)
                 ) {
-                    Text("No", fontSize = 18.sp)
+                    Text("No", fontSize = 18.sp, fontFamily = outfitRegular)
                 }
             },
-            title = { Text("Confirmar cierre de sesión", fontSize = 18.sp) },
-            text = { Text("¿Está seguro de que desea cerrar sesión?", fontSize = 18.sp) }
+            title = { Text("Confirmar cierre de sesión", fontSize = 18.sp, fontFamily = outfitRegular) },
+            text = { Text("¿Está seguro de que desea cerrar sesión?", fontSize = 18.sp, fontFamily = outfitRegular) }
         )
     }
 
     errorMessage.value?.let {
-        Text(text = it, color = MaterialTheme.colorScheme.error)
+        Text(text = it, color = MaterialTheme.colorScheme.error, fontFamily = outfitRegular)
     }
 }

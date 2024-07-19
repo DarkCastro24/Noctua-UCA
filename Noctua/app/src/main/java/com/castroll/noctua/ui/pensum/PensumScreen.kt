@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -38,6 +40,7 @@ fun PensumScreen(userViewModel: UserViewModel) {
 fun PensumContent(userViewModel: UserViewModel) {
     val user by userViewModel.user.observeAsState()
     val context = LocalContext.current
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
 
     val showCurrentSubjectsDialog = remember { mutableStateOf(false) }
     val showTotalSubjectsDialog = remember { mutableStateOf(false) }
@@ -142,7 +145,10 @@ fun PensumContent(userViewModel: UserViewModel) {
         )
 
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "PROGRESO EN: ${user?.career}", style = MaterialTheme.typography.headlineMedium.copy(color = Color(0xFF001F3F)))
+            Text(
+                text = "PROGRESO EN: ${user?.career}",
+                style = MaterialTheme.typography.headlineMedium.copy(color = Color(0xFF001F3F), fontFamily = outfitRegular)
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -151,13 +157,13 @@ fun PensumContent(userViewModel: UserViewModel) {
             val avance = if (totalMaterias != 0) (aprobadasMaterias * 100) / totalMaterias else 0
 
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Materias totales/aprobadas: $totalMaterias/$aprobadasMaterias", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Materias totales/aprobadas: $totalMaterias/$aprobadasMaterias", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Avance en la carrera: $avance%", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Avance en la carrera: $avance%", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Num materias actuales: ${currentSubjects.size}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Num materias actuales: ${currentSubjects.size}", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "CUM de la carrera: ${String.format("%.2f", cum)}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "CUM de la carrera: ${String.format("%.2f", cum)}", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -170,7 +176,7 @@ fun PensumContent(userViewModel: UserViewModel) {
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001F3F), contentColor = Color.White)
                 ) {
-                    Text("Materias en curso", style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("Materias en curso", style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, fontFamily = outfitRegular), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Button(
                     onClick = { showTotalSubjectsDialog.value = true },
@@ -181,7 +187,7 @@ fun PensumContent(userViewModel: UserViewModel) {
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001F3F), contentColor = Color.White)
                 ) {
-                    Text("Materias aprobadas", style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("Materias aprobadas", style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, fontFamily = outfitRegular), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
 
@@ -195,14 +201,14 @@ fun PensumContent(userViewModel: UserViewModel) {
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001F3F), contentColor = Color.White)
             ) {
-                Text("Seleccionar materias en curso", style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("Seleccionar materias en curso", style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, fontFamily = outfitRegular), maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "CICLOS",
-                style = MaterialTheme.typography.titleMedium.copy(color = Color(0xFF001F3F)),
+                style = MaterialTheme.typography.titleMedium.copy(color = Color(0xFF001F3F), fontFamily = outfitRegular),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -231,7 +237,7 @@ fun PensumContent(userViewModel: UserViewModel) {
                                     )
                                     Text(
                                         text = "Ciclo ${numerosRomanos.getOrNull(ciclo - 1) ?: ciclo}",
-                                        style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F)),
+                                        style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontFamily = outfitRegular),
                                         modifier = Modifier.padding(bottom = 8.dp)
                                     )
                                 }
@@ -246,7 +252,7 @@ fun PensumContent(userViewModel: UserViewModel) {
                                     Text(
                                         text = "${materia.nombre} - ${materia.uv} UV",
                                         color = color,
-                                        style = MaterialTheme.typography.bodySmall,
+                                        style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular),
                                         modifier = Modifier.padding(bottom = 4.dp)
                                     )
                                 }
@@ -330,14 +336,15 @@ fun CurrentSubjectsDialog(
     onRemoveSubject: (String) -> Unit,
     onApproveSubject: (String, Double) -> Unit
 ) {
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
     val subjectGrades = remember { mutableStateMapOf<String, String>() }
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text("Materias en curso", style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold)) },
+        title = { Text("Materias en curso", style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold, fontFamily = outfitRegular)) },
         text = {
             if (currentSubjects.isEmpty()) {
-                Text("No hay materias en curso", style = MaterialTheme.typography.bodySmall)
+                Text("No hay materias en curso", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             } else {
                 LazyColumn {
                     items(currentSubjects) { subject ->
@@ -348,14 +355,14 @@ fun CurrentSubjectsDialog(
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
                         ) {
-                            Text(subject, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                            Text(subject, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
                             TextField(
                                 value = grade,
                                 onValueChange = {
                                     grade = it
                                     subjectGrades[subject] = it
                                 },
-                                label = { Text("Nota", style = MaterialTheme.typography.bodySmall) },
+                                label = { Text("Nota", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular)) },
                                 modifier = Modifier.width(80.dp)
                             )
                             IconButton(onClick = {
@@ -375,7 +382,7 @@ fun CurrentSubjectsDialog(
         },
         confirmButton = {
             Button(onClick = onDismissRequest, modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(16.dp)) {
-                Text("Cerrar", style = MaterialTheme.typography.bodySmall)
+                Text("Cerrar", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             }
         }
     )
@@ -389,6 +396,7 @@ fun AddSubjectsDialog(
     onDismissRequest: () -> Unit,
     onAddCurrentSubject: (String) -> Unit
 ) {
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
     var searchQuery by remember { mutableStateOf("") }
     val context = LocalContext.current
 
@@ -399,19 +407,19 @@ fun AddSubjectsDialog(
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text("Seleccionar materias en curso", style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold)) },
+        title = { Text("Seleccionar materias en curso", style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold, fontFamily = outfitRegular)) },
         text = {
             Column {
                 TextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Buscar materia", style = MaterialTheme.typography.bodySmall) },
+                    label = { Text("Buscar materia", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 val filteredSubjects = availableSubjects.filter { it.nombre.contains(searchQuery, ignoreCase = true) }
                 if (filteredSubjects.isEmpty()) {
-                    Text("No hay materias disponibles", style = MaterialTheme.typography.bodySmall)
+                    Text("No hay materias disponibles", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
                 } else {
                     LazyColumn {
                         items(filteredSubjects) { materia ->
@@ -430,7 +438,7 @@ fun AddSubjectsDialog(
                                         }
                                     }
                             ) {
-                                Text(materia.nombre, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                                Text(materia.nombre, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
                             }
                         }
                     }
@@ -439,7 +447,7 @@ fun AddSubjectsDialog(
         },
         confirmButton = {
             Button(onClick = onDismissRequest, modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(16.dp)) {
-                Text("Cerrar", style = MaterialTheme.typography.bodySmall)
+                Text("Cerrar", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             }
         }
     )
@@ -452,12 +460,13 @@ fun SubjectListDialog(
     onDismissRequest: () -> Unit,
     onRemoveSubject: ((String) -> Unit)? = null
 ) {
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(title, style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold)) },
+        title = { Text(title, style = MaterialTheme.typography.titleSmall.copy(color = Color(0xFF001F3F), fontWeight = FontWeight.Bold, fontFamily = outfitRegular)) },
         text = {
             if (subjects.isEmpty()) {
-                Text("No hay materias agregadas", style = MaterialTheme.typography.bodySmall)
+                Text("No hay materias agregadas", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             } else {
                 LazyColumn {
                     items(subjects) { subject ->
@@ -470,9 +479,9 @@ fun SubjectListDialog(
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
                         ) {
-                            Text(subjectName, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                            Text(subjectName, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
                             if (grade != null && grade != 0.0) {
-                                Text(grade.toString(), style = MaterialTheme.typography.bodySmall)
+                                Text(grade.toString(), style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
                             }
                             if (onRemoveSubject != null) {
                                 IconButton(onClick = { onRemoveSubject(subject) }) {
@@ -486,7 +495,7 @@ fun SubjectListDialog(
         },
         confirmButton = {
             Button(onClick = onDismissRequest, modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(16.dp)) {
-                Text("Cerrar", style = MaterialTheme.typography.bodySmall)
+                Text("Cerrar", style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular))
             }
         }
     )
@@ -522,8 +531,6 @@ fun showToast(context: Context, message: String) {
 fun groupBySubjects(materias: List<Materia>): Map<Int, List<Materia>> {
     return materias.groupBy { it.ciclo }
 }
-
-
 
 
 

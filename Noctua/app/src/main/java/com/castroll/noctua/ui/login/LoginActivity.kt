@@ -44,6 +44,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -126,6 +128,9 @@ class LoginActivity : ComponentActivity() {
         var showErrorDialog by remember { mutableStateOf(false) }
         var errorMessage by remember { mutableStateOf("") }
 
+        // Cargar la fuente personalizada
+        val outfitRegular = FontFamily(Font(R.font.outfitregular))
+
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -159,7 +164,7 @@ class LoginActivity : ComponentActivity() {
                     Text(
                         text = "Noctua UCA",
                         color = navyBlue,
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleSmall.copy(fontFamily = outfitRegular),
                         modifier = Modifier.padding(top = 2.dp)
                     )
                 }
@@ -171,13 +176,13 @@ class LoginActivity : ComponentActivity() {
                 ) {
                     Text(
                         text = "El progreso de la tecnología nos da la oportunidad de mejorar el mundo.",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleLarge.copy(fontFamily = outfitRegular),
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "- Bill Gates",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular),
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
@@ -194,7 +199,8 @@ class LoginActivity : ComponentActivity() {
                         modifier = Modifier.width(280.dp),
                         text = username,
                         onValueChange = { username = it.trim() },
-                        iconSize = 20.dp
+                        iconSize = 20.dp,
+                        outfitRegular = outfitRegular
                     )
                     Spacer(modifier = Modifier.height(spacing))
                     TextFieldWithPasswordIcon(
@@ -205,7 +211,8 @@ class LoginActivity : ComponentActivity() {
                         text = password,
                         onValueChange = { password = it.trim() },
                         iconSize = 20.dp,
-                        trailingIconSize = 16.dp
+                        trailingIconSize = 16.dp,
+                        outfitRegular = outfitRegular
                     )
                     Spacer(modifier = Modifier.height(spacing))
                     Button(
@@ -229,7 +236,7 @@ class LoginActivity : ComponentActivity() {
                         colors = ButtonDefaults.buttonColors(containerColor = navyBlue),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
-                        Text(text = "Iniciar Sesión", color = Color.White, fontSize = 16.sp)
+                        Text(text = "Iniciar Sesión", color = Color.White, fontSize = 16.sp, fontFamily = outfitRegular)
                     }
                 }
                 Column(
@@ -251,7 +258,7 @@ class LoginActivity : ComponentActivity() {
                             tint = Color.White
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "Iniciar con Google", color = Color.White, fontSize = 16.sp)
+                        Text(text = "Iniciar con Google", color = Color.White, fontSize = 16.sp, fontFamily = outfitRegular)
                     }
                     Spacer(modifier = Modifier.height(32.dp))
                 }
@@ -262,14 +269,14 @@ class LoginActivity : ComponentActivity() {
                     onDismissRequest = {
                         showErrorDialog = false
                     },
-                    title = { Text("Error al iniciar sesión") },
-                    text = { Text(errorMessage) },
+                    title = { Text("Error al iniciar sesión", fontFamily = outfitRegular) },
+                    text = { Text(errorMessage, fontFamily = outfitRegular) },
                     confirmButton = {
                         Button(
                             onClick = { showErrorDialog = false },
                             colors = ButtonDefaults.buttonColors(containerColor = navyBlue)
                         ) {
-                            Text("OK")
+                            Text("OK", fontFamily = outfitRegular)
                         }
                     }
                 )
@@ -286,14 +293,15 @@ class LoginActivity : ComponentActivity() {
         modifier: Modifier = Modifier,
         text: String,
         onValueChange: (String) -> Unit,
-        iconSize: Dp = 24.dp // Add a parameter for icon size with a default value
+        iconSize: Dp = 24.dp, // Add a parameter for icon size with a default value
+        outfitRegular: FontFamily // Add a parameter for the font family
     ) {
         val navyBlue = Color(0xFF001F3F) // Color azul marino
 
         OutlinedTextField(
             value = text,
             onValueChange = onValueChange,
-            placeholder = { Text(placeholder) },
+            placeholder = { Text(placeholder, fontFamily = outfitRegular) },
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             visualTransformation = if (keyboardType == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None,
             leadingIcon = {
@@ -322,7 +330,8 @@ class LoginActivity : ComponentActivity() {
         text: String,
         onValueChange: (String) -> Unit,
         iconSize: Dp = 24.dp, // Add a parameter for icon size with a default value
-        trailingIconSize: Dp = 16.dp // Add a parameter for the trailing icon size
+        trailingIconSize: Dp = 16.dp, // Add a parameter for the trailing icon size
+        outfitRegular: FontFamily // Add a parameter for the font family
     ) {
         val navyBlue = Color(0xFF001F3F) // Color azul marino
         var passwordVisible by remember { mutableStateOf(false) }
@@ -330,7 +339,7 @@ class LoginActivity : ComponentActivity() {
         OutlinedTextField(
             value = text,
             onValueChange = onValueChange,
-            placeholder = { Text(placeholder) },
+            placeholder = { Text(placeholder, fontFamily = outfitRegular) },
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             visualTransformation = if (keyboardType == KeyboardType.Password && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
             leadingIcon = {
@@ -589,8 +598,8 @@ class LoginActivity : ComponentActivity() {
         super.onDestroy()
         coroutineScope.cancel()
     }
-}
 
-private fun Any.setTextColor(color: Color) {
-
+    private fun Any.setTextColor(color: Color) {
+        // Extension function to set text color
+    }
 }

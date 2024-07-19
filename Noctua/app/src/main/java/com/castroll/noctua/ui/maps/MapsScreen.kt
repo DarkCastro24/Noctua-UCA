@@ -18,6 +18,8 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,6 +30,9 @@ import com.castroll.noctua.R
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
+    // Cargar la fuente personalizada
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
+
     var scale by remember { mutableFloatStateOf(1f) }
     var zoomedIn by remember { mutableStateOf(false) }
     var offset by remember { mutableStateOf(Offset.Zero) }
@@ -67,6 +72,7 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
                         text = "Mapa del Campus UCA",
                         fontWeight = FontWeight.Bold,
                         fontSize = 28.sp,
+                        fontFamily = outfitRegular,
                         color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -120,6 +126,7 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
                             text = "¿Hacia donde vas?",
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp,
+                            fontFamily = outfitRegular,
                             color = Color.Black
                         )
 
@@ -137,6 +144,7 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
                                 text = "Seleccionar ubicación",
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 20.sp,
+                                fontFamily = outfitRegular,
                                 color = Color.White
                             )
                         }
@@ -148,6 +156,7 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
                             text = "Opciones",
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp,
+                            fontFamily = outfitRegular,
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(20.dp))
@@ -166,6 +175,7 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
                                 text = "Ya llegue",
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 20.sp,
+                                fontFamily = outfitRegular,
                                 color = Color.White
                             )
                         }

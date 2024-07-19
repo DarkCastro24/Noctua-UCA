@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -73,6 +75,9 @@ fun MainScreen(userViewModel: UserViewModel) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    // Cargar la fuente personalizada
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
+
     ModalNavigationDrawer(
         drawerContent = {
             Box(
@@ -80,7 +85,7 @@ fun MainScreen(userViewModel: UserViewModel) {
                     .fillMaxWidth(0.75f)
                     .background(Color.White)
             ) {
-                DrawerContent(navController, userViewModel) {
+                DrawerContent(navController, userViewModel, outfitRegular) {
                     scope.launch { drawerState.close() }
                 }
             }
@@ -90,7 +95,7 @@ fun MainScreen(userViewModel: UserViewModel) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Noctua UCA", style = MaterialTheme.typography.bodyMedium) },
+                    title = { Text("Noctua UCA", style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)) },
                     navigationIcon = {
                         IconButton(onClick = {
                             scope.launch { drawerState.open() }
@@ -121,13 +126,13 @@ fun MainScreen(userViewModel: UserViewModel) {
             },
             containerColor = MaterialTheme.colorScheme.background
         ) { innerPadding ->
-            NavigationHost(navController, Modifier.padding(innerPadding), userViewModel, context)
+            NavigationHost(navController, Modifier.padding(innerPadding), userViewModel, context, outfitRegular)
         }
     }
 }
 
 @Composable
-fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel, onClose: () -> Unit) {
+fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel, outfitRegular: FontFamily, onClose: () -> Unit) {
     val user by userViewModel.user.observeAsState()
     val username = user?.username ?: "Desconocido"
     val userType = user?.type ?: 1
@@ -166,7 +171,7 @@ fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel
                     Text(
                         text = "Noctua UCA",
                         color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontFamily = outfitRegular),
                         fontSize = 18.sp,
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
@@ -184,31 +189,31 @@ fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel
                 Text(
                     text = "$username",
                     color = MaterialTheme.colorScheme.onPrimary,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall.copy(fontFamily = outfitRegular),
                     fontSize = 14.sp,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
         }
         Column(modifier = Modifier.weight(1f)) {
-            DrawerItem("Inicio", R.drawable.icon_home, navController, "home", onClose)
-            DrawerItem("Busqueda", R.drawable.icon_search, navController, "search", onClose)
-            DrawerItem("Laboratorios", R.drawable.icon_laboratories, navController, "laboratories", onClose)
-            DrawerItem("Perfil", R.drawable.icon_profile, navController, "profile", onClose)
-            DrawerItem("Mapas", R.drawable.icon_maps, navController, "maps", onClose)
+            DrawerItem("Inicio", R.drawable.icon_home, navController, "home", onClose, outfitRegular)
+            DrawerItem("Busqueda", R.drawable.icon_search, navController, "search", onClose, outfitRegular)
+            DrawerItem("Laboratorios", R.drawable.icon_laboratories, navController, "laboratories", onClose, outfitRegular)
+            DrawerItem("Perfil", R.drawable.icon_profile, navController, "profile", onClose, outfitRegular)
+            DrawerItem("Mapas", R.drawable.icon_maps, navController, "maps", onClose, outfitRegular)
             if (userType != 0) {
-                DrawerItem("QR", R.drawable.icon_qr, navController, "qr", onClose)
-                DrawerItem("Pensum", R.drawable.icon_pensum, navController, "pensum", onClose) // Cambiar icono posteriormente
+                DrawerItem("QR", R.drawable.icon_qr, navController, "qr", onClose, outfitRegular)
+                DrawerItem("Pensum", R.drawable.icon_pensum, navController, "pensum", onClose, outfitRegular) // Cambiar icono posteriormente
             }
         }
-        DrawerItem("Cerrar Sesión", R.drawable.icon_signout, navController, "signout", onClose, Modifier.align(Alignment.CenterHorizontally).padding(vertical = 8.dp))
+        DrawerItem("Cerrar Sesión", R.drawable.icon_signout, navController, "signout", onClose, outfitRegular, Modifier.align(Alignment.CenterHorizontally).padding(vertical = 8.dp))
     }
 }
 
 @Composable
-fun DrawerItem(label: String, iconResId: Int, navController: NavHostController, route: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun DrawerItem(label: String, iconResId: Int, navController: NavHostController, route: String, onClick: () -> Unit, outfitRegular: FontFamily, modifier: Modifier = Modifier) {
     NavigationDrawerItem(
-        label = { Text(label, style = MaterialTheme.typography.bodySmall, fontSize = 12.sp) },
+        label = { Text(label, style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular), fontSize = 12.sp) },
         icon = { Icon(painterResource(id = iconResId), contentDescription = label, tint = Color.DarkGray, modifier = Modifier.size(20.dp)) },
         selected = false,
         onClick = {
@@ -234,7 +239,8 @@ fun NavigationHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     userViewModel: UserViewModel,
-    context: Context
+    context: Context,
+    outfitRegular: FontFamily // Recibe la fuente como parámetro
 ) {
     NavHost(navController = navController, startDestination = "home", modifier = modifier) {
         composable("home") { HomeScreen() }

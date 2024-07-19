@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,6 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,14 +31,13 @@ import coil.compose.rememberAsyncImagePainter
 import com.castroll.noctua.R
 import com.castroll.noctua.data.remote.model.Lab
 import com.castroll.noctua.data.remote.model.Schedule
-import com.castroll.noctua.utils.formatDayString
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 @Composable
 fun LaboratoriesScreen(laboratoriesViewModel: LaboratoriesViewModel = viewModel()) {
     val laboratories by laboratoriesViewModel.laboratories.observeAsState(emptyList())
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -50,7 +50,7 @@ fun LaboratoriesScreen(laboratoriesViewModel: LaboratoriesViewModel = viewModel(
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = "LABORATORIOS",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineMedium.copy(fontFamily = outfitRegular),
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,7 +62,7 @@ fun LaboratoriesScreen(laboratoriesViewModel: LaboratoriesViewModel = viewModel(
                     .padding(16.dp)
             ) {
                 items(laboratories) { lab ->
-                    LaboratoryCard(lab)
+                    LaboratoryCard(lab, outfitRegular)
                 }
             }
         }
@@ -70,12 +70,13 @@ fun LaboratoriesScreen(laboratoriesViewModel: LaboratoriesViewModel = viewModel(
 }
 
 @Composable
-fun LaboratoryCard(lab: Lab) {
+fun LaboratoryCard(lab: Lab, outfitRegular: FontFamily) {
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     if (showDialog) {
         ScheduleDialog(
             lab = lab,
-            onDismiss = { setShowDialog(false) }
+            onDismiss = { setShowDialog(false) },
+            outfitRegular = outfitRegular
         )
     }
     Card(
@@ -110,29 +111,29 @@ fun LaboratoryCard(lab: Lab) {
             ) {
                 Text(
                     text = lab.labnumber,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall.copy(fontFamily = outfitRegular),
                     fontSize = 16.sp
                 )
                 Text(
                     text = "Descripción:",
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                     fontSize = 12.sp
                 )
                 Text(
                     text = lab.description,
                     color = Color(0xFF5F6F92),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular),
                     fontSize = 12.sp
                 )
                 Text(
                     text = "Capacidad:",
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                     fontSize = 12.sp
                 )
                 Text(
                     text = "${lab.alumAmount} estudiantes",
                     color = Color(0xFF5F6F92),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(fontFamily = outfitRegular),
                     fontSize = 12.sp
                 )
                 Spacer(modifier = Modifier.weight(1f))
@@ -156,7 +157,7 @@ fun LaboratoryCard(lab: Lab) {
 }
 
 @Composable
-fun ScheduleDialog(lab: Lab, onDismiss: () -> Unit) {
+fun ScheduleDialog(lab: Lab, onDismiss: () -> Unit, outfitRegular: FontFamily) {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val dayFormat = SimpleDateFormat("EEEE", Locale("es", "ES"))
     val dayNumberFormat = SimpleDateFormat("d", Locale.getDefault())
@@ -183,7 +184,7 @@ fun ScheduleDialog(lab: Lab, onDismiss: () -> Unit) {
         title = {
             Text(
                 text = "Actividades de: ${lab.labnumber}",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.headlineSmall.copy(fontFamily = outfitRegular),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -197,7 +198,7 @@ fun ScheduleDialog(lab: Lab, onDismiss: () -> Unit) {
                 }
                 Text(
                     text = "Día seleccionado: $selectedDayText",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -220,7 +221,7 @@ fun ScheduleDialog(lab: Lab, onDismiss: () -> Unit) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "${dayStrings[currentPage.value]} ${dayNumbers[currentPage.value]}",
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular)
                         )
                     }
                     Button(
@@ -239,44 +240,44 @@ fun ScheduleDialog(lab: Lab, onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "Fecha: ${selectedDate.value}",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn {
                     items(predefinedHours) { hour ->
                         val schedulesForSelectedDate = lab.schedule.filter { it.date == selectedDate.value }
                         val schedule = schedulesForSelectedDate.find { it.hour == hour }
-                        ScheduleItem(schedule, hour)
+                        ScheduleItem(schedule, hour, outfitRegular)
                     }
                 }
             }
         },
         confirmButton = {
             Button(onClick = onDismiss) {
-                Text("OK")
+                Text("OK", fontFamily = outfitRegular)
             }
         }
     )
 }
 
 @Composable
-fun ScheduleItem(schedule: Schedule?, hour: String) {
+fun ScheduleItem(schedule: Schedule?, hour: String, outfitRegular: FontFamily) {
     Column(modifier = Modifier.padding(8.dp)) {
         Text(
             text = "Horario: $hour",
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular)
         )
         Spacer(modifier = Modifier.height(4.dp))
         if (schedule != null) {
             Text(
                 text = "Actividad: ${schedule.activity ?: "N/A"}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Disponible: ",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)
                 )
                 if (schedule.available) {
                     Icon(
@@ -295,13 +296,13 @@ fun ScheduleItem(schedule: Schedule?, hour: String) {
         } else {
             Text(
                 text = "Horario libre, sin actividades",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Disponible: ",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)
                 )
                 Icon(
                     imageVector = Icons.Default.Check,
@@ -316,5 +317,3 @@ fun ScheduleItem(schedule: Schedule?, hour: String) {
 fun formatDayString(day: String): String {
     return day.replaceFirstChar { it.uppercaseChar() }
 }
-
-

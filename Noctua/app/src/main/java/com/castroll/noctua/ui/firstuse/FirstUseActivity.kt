@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -84,6 +86,9 @@ fun FirstUseScreen(username: String?, userViewModel: UserViewModel, onProfileUpd
     val hobbies = remember { mutableStateOf("") }
     val userType = userViewModel.user.value?.type ?: 1
 
+    // Cargar la fuente personalizada
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
+
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = Modifier.padding(0.dp)
@@ -104,7 +109,8 @@ fun FirstUseScreen(username: String?, userViewModel: UserViewModel, onProfileUpd
             snackbarHostState = snackbarHostState,
             userViewModel = userViewModel,
             onProfileUpdated = onProfileUpdated,
-            userType = userType
+            userType = userType,
+            outfitRegular = outfitRegular // Pasa la fuente como parámetro
         )
 
         if (showAlertSinMaterias.value) {
@@ -129,11 +135,11 @@ fun FirstUseScreen(username: String?, userViewModel: UserViewModel, onProfileUpd
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("OK")
+                        Text("OK", fontFamily = outfitRegular)
                     }
                 },
-                title = { Text("Información actualizada") },
-                text = { Text("Sus datos han sido actualizados en su perfil, puede utilizar su cuenta") }
+                title = { Text("Información actualizada", fontFamily = outfitRegular) },
+                text = { Text("Sus datos han sido actualizados en su perfil, puede utilizar su cuenta", fontFamily = outfitRegular) }
             )
         }
     }
@@ -157,7 +163,8 @@ fun FirstUseContent(
     snackbarHostState: SnackbarHostState,
     userViewModel: UserViewModel,
     onProfileUpdated: () -> Unit,
-    userType: Int
+    userType: Int,
+    outfitRegular: FontFamily // Recibe la fuente como parámetro
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -212,7 +219,8 @@ fun FirstUseContent(
                     color = Color(0xFF001F3F),
                     style = MaterialTheme.typography.titleSmall,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    fontFamily = outfitRegular
                 )
             }
 
@@ -223,7 +231,8 @@ fun FirstUseContent(
                     text = "¡BIENVENIDO!\n${userViewModel.user.value?.name ?: "INVITADO"},\n¿YA COMPLETASTE TU INFORMACIÓN PERSONAL?",
                     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.Light),
                     textAlign = TextAlign.Start,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    fontFamily = outfitRegular
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -233,8 +242,8 @@ fun FirstUseContent(
                     OutlinedTextField(
                         value = selectedCarrera.value ?: "",
                         onValueChange = {},
-                        label = { Text("Carrera seleccionada") },
-                        placeholder = { Text("Seleccionar el botón para agregar carrera") },
+                        label = { Text("Carrera seleccionada", fontFamily = outfitRegular) },
+                        placeholder = { Text("Seleccionar el botón para agregar carrera", fontFamily = outfitRegular) },
                         readOnly = true,
                         leadingIcon = {
                             Icon(
@@ -263,7 +272,7 @@ fun FirstUseContent(
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001F3F), contentColor = Color.White),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Seleccionar carrera", fontSize = 12.sp, textAlign = TextAlign.Center)
+                        Text("Seleccionar carrera", fontSize = 12.sp, textAlign = TextAlign.Center, fontFamily = outfitRegular)
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             painter = painterResource(id = R.drawable.icon_abajo),
@@ -280,12 +289,12 @@ fun FirstUseContent(
                     OutlinedTextField(
                         value = selectedMaterias.joinToString(", ") { it.nombre },
                         onValueChange = {},
-                        label = { Text("Materias en curso") },
+                        label = { Text("Materias en curso", fontFamily = outfitRegular) },
                         placeholder = {
                             if (selectedCarrera.value == null) {
-                                Text("Seleccionar carrera primero")
+                                Text("Seleccionar carrera primero", fontFamily = outfitRegular)
                             } else {
-                                Text("Seleccionar el botón para agregar materias")
+                                Text("Seleccionar el botón para agregar materias", fontFamily = outfitRegular)
                             }
                         },
                         readOnly = true,
@@ -325,7 +334,7 @@ fun FirstUseContent(
                                 .weight(1.5f)
                                 .padding(end = 4.dp)
                         ) {
-                            Text("Agregar materias", fontSize = 12.sp, textAlign = TextAlign.Center)
+                            Text("Agregar materias", fontSize = 12.sp, textAlign = TextAlign.Center, fontFamily = outfitRegular)
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_add),
@@ -341,7 +350,7 @@ fun FirstUseContent(
                                 .weight(1f)
                                 .padding(start = 4.dp)
                         ) {
-                            Text("Limpiar", fontSize = 12.sp, textAlign = TextAlign.Center)
+                            Text("Limpiar", fontSize = 12.sp, textAlign = TextAlign.Center, fontFamily = outfitRegular)
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_basura),
@@ -359,12 +368,12 @@ fun FirstUseContent(
                     OutlinedTextField(
                         value = selectedMateriasAprobadas.joinToString(", ") { it.nombre },
                         onValueChange = {},
-                        label = { Text("Materias aprobadas (opcional)") },
+                        label = { Text("Materias aprobadas (opcional)", fontFamily = outfitRegular) },
                         placeholder = {
                             if (selectedCarrera.value == null) {
-                                Text("Seleccionar carrera primero")
+                                Text("Seleccionar carrera primero", fontFamily = outfitRegular)
                             } else {
-                                Text("Seleccionar el botón para agregar materias aprobadas")
+                                Text("Seleccionar el botón para agregar materias aprobadas", fontFamily = outfitRegular)
                             }
                         },
                         readOnly = true,
@@ -404,7 +413,7 @@ fun FirstUseContent(
                                 .weight(1.5f)
                                 .padding(end = 4.dp)
                         ) {
-                            Text("Agregar materias", fontSize = 12.sp, textAlign = TextAlign.Center)
+                            Text("Agregar materias", fontSize = 12.sp, textAlign = TextAlign.Center, fontFamily = outfitRegular)
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_add),
@@ -420,7 +429,7 @@ fun FirstUseContent(
                                 .weight(1f)
                                 .padding(start = 4.dp)
                         ) {
-                            Text("Limpiar", fontSize = 12.sp, textAlign = TextAlign.Center)
+                            Text("Limpiar", fontSize = 12.sp, textAlign = TextAlign.Center, fontFamily = outfitRegular)
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_basura),
@@ -443,7 +452,7 @@ fun FirstUseContent(
                             phone.value = it
                         }
                     },
-                    label = { Text("Teléfono (opcional)") },
+                    label = { Text("Teléfono (opcional)", fontFamily = outfitRegular) },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                     leadingIcon = {
                         Icon(
@@ -468,8 +477,8 @@ fun FirstUseContent(
                 OutlinedTextField(
                     value = email.value,
                     onValueChange = { email.value = it },
-                    label = { Text("Correo de contacto *") },
-                    placeholder = { Text("correo@example.com") },
+                    label = { Text("Correo de contacto *", fontFamily = outfitRegular) },
+                    placeholder = { Text("correo@example.com", fontFamily = outfitRegular) },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                     leadingIcon = {
                         Icon(
@@ -494,7 +503,7 @@ fun FirstUseContent(
                 OutlinedTextField(
                     value = biography.value,
                     onValueChange = { biography.value = it },
-                    label = { Text("Biografía *") },
+                    label = { Text("Biografía *", fontFamily = outfitRegular) },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_bio_profile),
@@ -518,7 +527,7 @@ fun FirstUseContent(
                 OutlinedTextField(
                     value = hobbies.value,
                     onValueChange = { hobbies.value = it },
-                    label = { Text("Hobbies *") },
+                    label = { Text("Hobbies *", fontFamily = outfitRegular) },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_hobbies_profile),
@@ -571,7 +580,7 @@ fun FirstUseContent(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001F3F), contentColor = Color.White),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Guardar cambios", fontSize = 12.sp, textAlign = TextAlign.Center)
+                    Text("Guardar cambios", fontSize = 12.sp, textAlign = TextAlign.Center, fontFamily = outfitRegular)
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.icon_save),
@@ -604,7 +613,8 @@ fun FirstUseContent(
                         selectedMaterias.add(materia)
                         showDialogMaterias.value = false
                     },
-                    onDismissRequest = { showDialogMaterias.value = false }
+                    onDismissRequest = { showDialogMaterias.value = false },
+                    outfitRegular = outfitRegular // Pasa la fuente como parámetro
                 )
             }
         }
@@ -630,7 +640,8 @@ fun FirstUseContent(
                         selectedMateriasAprobadas.add(materia)
                         showDialogMateriasAprobadas.value = false
                     },
-                    onDismissRequest = { showDialogMateriasAprobadas.value = false }
+                    onDismissRequest = { showDialogMateriasAprobadas.value = false },
+                    outfitRegular = outfitRegular // Pasa la fuente como parámetro
                 )
             }
         }
@@ -644,7 +655,8 @@ fun FirstUseContent(
                     selectedMateriasAprobadas.clear()
                     showDialogCarreras.value = false
                 },
-                onDismissRequest = { showDialogCarreras.value = false }
+                onDismissRequest = { showDialogCarreras.value = false },
+                outfitRegular = outfitRegular // Pasa la fuente como parámetro
             )
         }
     }
@@ -652,13 +664,14 @@ fun FirstUseContent(
 
 @Composable
 fun AlertaSinMaterias(onDismissRequest: () -> Unit) {
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text("Materias no disponibles") },
-        text = { Text("Aún no hay materias que mostrar para la carrera seleccionada.") },
+        title = { Text("Materias no disponibles", fontFamily = outfitRegular) },
+        text = { Text("Aún no hay materias que mostrar para la carrera seleccionada.", fontFamily = outfitRegular) },
         confirmButton = {
             Button(onClick = onDismissRequest, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001F3F), contentColor = Color.White)) {
-                Text("OK")
+                Text("OK", fontFamily = outfitRegular)
             }
         }
     )
@@ -668,20 +681,21 @@ fun AlertaSinMaterias(onDismissRequest: () -> Unit) {
 fun MateriaSearchDialog(
     materias: List<Materia>,
     onMateriaSelected: (Materia) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    outfitRegular: FontFamily // Recibe la fuente como parámetro
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedMateria by remember { mutableStateOf<Materia?>(null) }
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text("Buscar Materia") },
+        title = { Text("Buscar Materia", fontFamily = outfitRegular) },
         text = {
             Column {
                 TextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Buscar") }
+                    label = { Text("Buscar", fontFamily = outfitRegular) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 val filteredMaterias =
@@ -697,7 +711,7 @@ fun MateriaSearchDialog(
                             colors = ButtonDefaults.textButtonColors(contentColor = if (isSelected) Color(0xFF001F3F) else Color.Black),
                             modifier = Modifier.border(1.dp, if (isSelected) Color(0xFF001F3F) else Color.Transparent)
                         ) {
-                            Text(materia.nombre)
+                            Text(materia.nombre, fontFamily = outfitRegular)
                         }
                     }
                 }
@@ -705,7 +719,7 @@ fun MateriaSearchDialog(
         },
         confirmButton = {
             Button(onClick = onDismissRequest, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001F3F), contentColor = Color.White)) {
-                Text("Cerrar")
+                Text("Cerrar", fontFamily = outfitRegular)
             }
         }
     )
@@ -715,20 +729,21 @@ fun MateriaSearchDialog(
 fun CarreraSearchDialog(
     carreras: List<String>,
     onCarreraSelected: (String) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    outfitRegular: FontFamily // Recibe la fuente como parámetro
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedCarrera by remember { mutableStateOf<String?>(null) }
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text("Buscar Carrera") },
+        title = { Text("Buscar Carrera", fontFamily = outfitRegular) },
         text = {
             Column {
                 TextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Buscar") }
+                    label = { Text("Buscar", fontFamily = outfitRegular) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 val filteredCarreras =
@@ -744,7 +759,7 @@ fun CarreraSearchDialog(
                             colors = ButtonDefaults.textButtonColors(contentColor = if (isSelected) Color(0xFF001F3F) else Color.Black),
                             modifier = Modifier.border(1.dp, if (isSelected) Color(0xFF001F3F) else Color.Transparent)
                         ) {
-                            Text(carrera)
+                            Text(carrera, fontFamily = outfitRegular)
                         }
                     }
                 }
@@ -752,7 +767,7 @@ fun CarreraSearchDialog(
         },
         confirmButton = {
             Button(onClick = onDismissRequest, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001F3F), contentColor = Color.White)) {
-                Text("Cerrar")
+                Text("Cerrar", fontFamily = outfitRegular)
             }
         }
     )

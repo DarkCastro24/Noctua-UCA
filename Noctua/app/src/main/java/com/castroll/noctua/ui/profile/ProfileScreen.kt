@@ -24,7 +24,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -54,6 +57,8 @@ fun ProfileScreen(
     val showAlert = remember { mutableStateOf(false) }
     val alertMessage = remember { mutableStateOf("") }
     val showChangePasswordDialog = remember { mutableStateOf(false) }
+
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -120,7 +125,7 @@ fun ProfileScreen(
                         shape = RoundedCornerShape(50),
                         modifier = Modifier.padding(bottom = 16.dp)
                     ) {
-                        Text(text = "Editar perfil", color = Color.White)
+                        Text(text = "Editar perfil", color = Color.White, fontFamily = outfitRegular)
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             painter = painterResource(R.drawable.icon_pencil),
@@ -135,7 +140,7 @@ fun ProfileScreen(
                         shape = RoundedCornerShape(50),
                         modifier = Modifier.padding(bottom = 16.dp)
                     ) {
-                        Text(text = "Cambiar contraseña", color = Color.White)
+                        Text(text = "Cambiar contraseña", color = Color.White, fontFamily = outfitRegular)
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             painter = painterResource(R.drawable.icon_contrasena),
@@ -146,25 +151,27 @@ fun ProfileScreen(
                     }
                 }
 
-                ProfileInfoField(label = "Nombre", value = user?.name ?: "No disponible", iconRes = R.drawable.icon_name_profile, editable = false)
-                ProfileInfoField(label = "Correo", value = email.value, iconRes = R.drawable.icon_correo_profile, onValueChange = { email.value = it })
-                ProfileInfoField(label = "Teléfono", value = phone.value, iconRes = R.drawable.icon_phone_profile, onValueChange = { phone.value = it })
-                ProfileInfoField(label = "Biografía", value = biography.value, iconRes = R.drawable.icon_bio_profile, onValueChange = { biography.value = it })
-                ProfileInfoField(label = "Hobbies", value = hobbies.value, iconRes = R.drawable.icon_hobbies_profile, onValueChange = { hobbies.value = it })
+                ProfileInfoField(label = "Nombre", value = user?.name ?: "No disponible", iconRes = R.drawable.icon_name_profile, editable = false, fontFamily = outfitRegular)
+                ProfileInfoField(label = "Correo", value = email.value, iconRes = R.drawable.icon_correo_profile, onValueChange = { email.value = it }, fontFamily = outfitRegular)
+                ProfileInfoField(label = "Teléfono", value = phone.value, iconRes = R.drawable.icon_phone_profile, onValueChange = { phone.value = it }, fontFamily = outfitRegular)
+                ProfileInfoField(label = "Biografía", value = biography.value, iconRes = R.drawable.icon_bio_profile, onValueChange = { biography.value = it }, fontFamily = outfitRegular)
+                ProfileInfoField(label = "Hobbies", value = hobbies.value, iconRes = R.drawable.icon_hobbies_profile, onValueChange = { hobbies.value = it }, fontFamily = outfitRegular)
 
                 if (user?.type != 0) {
-                    ProfileInfoField(label = "Carrera", value = career.value, iconRes = R.drawable.icon_carreer_profile, onValueChange = { career.value = it }, editable = user?.type != 1)
+                    ProfileInfoField(label = "Carrera", value = career.value, iconRes = R.drawable.icon_carreer_profile, onValueChange = { career.value = it }, editable = user?.type != 1, fontFamily = outfitRegular)
                     ProfileInfoField(
                         label = "Materias en curso",
                         value = if (user?.currentSubjects.isNullOrEmpty()) "No hay materias agregadas" else user?.currentSubjects?.joinToString(", ") ?: "",
                         iconRes = R.drawable.icon_materias_profile,
-                        editable = false
+                        editable = false,
+                        fontFamily = outfitRegular
                     )
                     ProfileInfoField(
                         label = "Materias aprobadas",
                         value = if (user?.allSubjects.isNullOrEmpty()) "No hay materias agregadas" else user?.allSubjects?.joinToString(", ") ?: "",
                         iconRes = R.drawable.icon_carrera,
-                        editable = false
+                        editable = false,
+                        fontFamily = outfitRegular
                     )
                 }
 
@@ -194,7 +201,8 @@ fun ProfileScreen(
                                     style = MaterialTheme.typography.bodyLarge.copy(
                                         fontWeight = FontWeight.Normal,
                                         fontSize = 16.sp,
-                                        color = Color(0xFF002366) // Navy Blue color
+                                        color = Color(0xFF002366), // Navy Blue color
+                                        fontFamily = outfitRegular
                                     ),
                                     modifier = Modifier.padding(bottom = 4.dp)
                                 )
@@ -209,12 +217,12 @@ fun ProfileScreen(
                                     checked = visible.value == "true",
                                     onCheckedChange = { visible.value = "true" }
                                 )
-                                Text("Visible", style = MaterialTheme.typography.bodySmall, color = Color(0xFF002366)) // Navy Blue color
+                                Text("Visible", style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF002366), fontFamily = outfitRegular)) // Navy Blue color
                                 Checkbox(
                                     checked = visible.value == "false",
                                     onCheckedChange = { visible.value = "false" }
                                 )
-                                Text("Oculto", style = MaterialTheme.typography.bodySmall, color = Color(0xFF002366)) // Navy Blue color
+                                Text("Oculto", style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF002366), fontFamily = outfitRegular)) // Navy Blue color
                             }
                         }
                     }
@@ -230,24 +238,25 @@ fun ProfileScreen(
             onDismissRequest = { showAlert.value = false },
             confirmButton = {
                 Button(onClick = { showAlert.value = false }) {
-                    Text("OK")
+                    Text("OK", fontFamily = outfitRegular)
                 }
             },
-            title = { Text("Error de validación") },
-            text = { Text(alertMessage.value) }
+            title = { Text("Error de validación", fontFamily = outfitRegular) },
+            text = { Text(alertMessage.value, fontFamily = outfitRegular) }
         )
     }
 
     if (showChangePasswordDialog.value) {
         ChangePasswordDialog(
             userViewModel = userViewModel,
-            onDismiss = { showChangePasswordDialog.value = false }
+            onDismiss = { showChangePasswordDialog.value = false },
+            fontFamily = outfitRegular
         )
     }
 }
 
 @Composable
-fun ChangePasswordDialog(userViewModel: UserViewModel, onDismiss: () -> Unit) {
+fun ChangePasswordDialog(userViewModel: UserViewModel, onDismiss: () -> Unit, fontFamily: FontFamily) {
     val currentPassword = remember { mutableStateOf("") }
     val newPassword = remember { mutableStateOf("") }
     val confirmPassword = remember { mutableStateOf("") }
@@ -270,12 +279,12 @@ fun ChangePasswordDialog(userViewModel: UserViewModel, onDismiss: () -> Unit) {
                     showToast("Las contraseñas no coinciden")
                 }
             }) {
-                Text("Actualizar contraseña")
+                Text("Actualizar contraseña", fontFamily = fontFamily)
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Cancelar")
+                Text("Cancelar", fontFamily = fontFamily)
             }
         },
         title = {
@@ -291,7 +300,7 @@ fun ChangePasswordDialog(userViewModel: UserViewModel, onDismiss: () -> Unit) {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Cambiar contraseña")
+                Text("Cambiar contraseña", fontFamily = fontFamily)
             }
         },
         text = {
@@ -299,7 +308,7 @@ fun ChangePasswordDialog(userViewModel: UserViewModel, onDismiss: () -> Unit) {
                 TextField(
                     value = currentPassword.value,
                     onValueChange = { currentPassword.value = it },
-                    label = { Text("Contraseña actual", fontSize = 14.sp) }, // Placeholder más pequeño
+                    label = { Text("Contraseña actual", fontSize = 14.sp, fontFamily = fontFamily) }, // Placeholder más pequeño
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = PasswordVisualTransformation()
                 )
@@ -307,7 +316,7 @@ fun ChangePasswordDialog(userViewModel: UserViewModel, onDismiss: () -> Unit) {
                 TextField(
                     value = newPassword.value,
                     onValueChange = { newPassword.value = it },
-                    label = { Text("Nueva contraseña", fontSize = 14.sp) }, // Placeholder más pequeño
+                    label = { Text("Nueva contraseña", fontSize = 14.sp, fontFamily = fontFamily) }, // Placeholder más pequeño
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = PasswordVisualTransformation()
                 )
@@ -315,7 +324,7 @@ fun ChangePasswordDialog(userViewModel: UserViewModel, onDismiss: () -> Unit) {
                 TextField(
                     value = confirmPassword.value,
                     onValueChange = { confirmPassword.value = it },
-                    label = { Text("Confirmar nueva contraseña", fontSize = 14.sp) }, // Placeholder más pequeño
+                    label = { Text("Confirmar nueva contraseña", fontSize = 14.sp, fontFamily = fontFamily) }, // Placeholder más pequeño
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = PasswordVisualTransformation()
                 )
@@ -326,7 +335,7 @@ fun ChangePasswordDialog(userViewModel: UserViewModel, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ProfileInfoField(label: String, value: String, iconRes: Int, editable: Boolean = true, onValueChange: (String) -> Unit = {}) {
+fun ProfileInfoField(label: String, value: String, iconRes: Int, editable: Boolean = true, onValueChange: (String) -> Unit = {}, fontFamily: FontFamily) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -351,7 +360,8 @@ fun ProfileInfoField(label: String, value: String, iconRes: Int, editable: Boole
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Normal,
                         fontSize = 16.sp,
-                        color = Color(0xFF002366) // Navy Blue color
+                        color = Color(0xFF002366), // Navy Blue color
+                        fontFamily = fontFamily
                     ),
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
@@ -361,7 +371,7 @@ fun ProfileInfoField(label: String, value: String, iconRes: Int, editable: Boole
                 TextField(
                     value = value,
                     onValueChange = onValueChange,
-                    textStyle = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal),
+                    textStyle = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal, fontFamily = fontFamily),
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
@@ -369,7 +379,8 @@ fun ProfileInfoField(label: String, value: String, iconRes: Int, editable: Boole
                     text = value,
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 14.sp,
-                        color = Color.Gray
+                        color = Color.Gray,
+                        fontFamily = fontFamily
                     )
                 )
             }

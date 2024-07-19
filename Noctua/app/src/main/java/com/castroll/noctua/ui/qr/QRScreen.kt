@@ -13,7 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,6 +40,8 @@ fun QRScreen(qrViewModel: QRViewModel = viewModel(), userViewModel: UserViewMode
     val qrCodeBitmap = generateQRCode(qrCodeText)
     val screenWidthPx = LocalContext.current.resources.displayMetrics.widthPixels
     val qrCodeSizeDp = with(LocalDensity.current) { (screenWidthPx * 0.7f).toDp() }
+
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
 
     Box(
         modifier = Modifier
@@ -82,20 +87,20 @@ fun QRScreen(qrViewModel: QRViewModel = viewModel(), userViewModel: UserViewMode
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = qrCodeText,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontFamily = outfitRegular),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = outfitRegular),
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Text(
                     text = lastname,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = outfitRegular),
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )

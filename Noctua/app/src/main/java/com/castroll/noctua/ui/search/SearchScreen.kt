@@ -28,7 +28,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -151,6 +154,8 @@ fun SearchContent(
     onSearch: (String) -> Unit,
     onRestore: () -> Unit
 ) {
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
+
     Column {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             TextField(
@@ -163,7 +168,7 @@ fun SearchContent(
                         onSearch(query)
                     }
                 },
-                label = { Text("Buscar por nombre o carnet") },
+                label = { Text("Buscar por nombre o carnet", fontFamily = outfitRegular) },
                 modifier = Modifier.weight(1f),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White.copy(alpha = 0.8f),
@@ -173,7 +178,7 @@ fun SearchContent(
                     focusedLabelColor = Color.DarkGray,
                     unfocusedLabelColor = Color.Gray
                 ),
-                textStyle = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, color = Color.DarkGray),
+                textStyle = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, color = Color.DarkGray, fontFamily = outfitRegular),
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.icon_lupa),
@@ -188,6 +193,8 @@ fun SearchContent(
 
 @Composable
 fun UsersCard(user: User, onClick: () -> Unit) {
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -208,8 +215,8 @@ fun UsersCard(user: User, onClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(text = user.name, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold), color = Color.DarkGray)
-                Text(text = "Email: ${user.username}", style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light), color = Color.DarkGray)
+                Text(text = user.name, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular), color = Color.DarkGray)
+                Text(text = "Email: ${user.username}", style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, fontFamily = outfitRegular), color = Color.DarkGray)
             }
         }
     }
@@ -219,6 +226,7 @@ fun UsersCard(user: User, onClick: () -> Unit) {
 fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val userType = if (user.type == 0) "Catedrático" else "Estudiante"
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -238,7 +246,7 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
             ) {
                 Text(
                     text = user.name,
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = Color.DarkGray
@@ -275,7 +283,7 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Correo:",
-                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                                     color = Color.DarkGray
                                 )
                             }
@@ -283,7 +291,7 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(start = 24.dp)
                             ) {
-                                Text(text = it, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light), color = Color.DarkGray)
+                                Text(text = it, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, fontFamily = outfitRegular), color = Color.DarkGray)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Icon(
                                     imageVector = Icons.Default.Email,
@@ -314,13 +322,13 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Carrera:",
-                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                                     color = Color.DarkGray
                                 )
                             }
                             Text(
                                 text = it,
-                                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light),
+                                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, fontFamily = outfitRegular),
                                 color = Color.DarkGray,
                                 modifier = Modifier.padding(start = 24.dp)
                             )
@@ -337,13 +345,13 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "Tipo:",
-                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                             color = Color.DarkGray
                         )
                     }
                     Text(
                         text = userType,
-                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, fontFamily = outfitRegular),
                         color = Color.DarkGray,
                         modifier = Modifier.padding(start = 24.dp)
                     )
@@ -361,7 +369,7 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Teléfono:",
-                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                                     color = Color.DarkGray
                                 )
                             }
@@ -369,7 +377,7 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(start = 24.dp)
                             ) {
-                                Text(text = it, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light), color = Color.DarkGray)
+                                Text(text = it, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, fontFamily = outfitRegular), color = Color.DarkGray)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Icon(
                                     painter = painterResource(id = R.drawable.icon_whatsapp),
@@ -399,7 +407,7 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Asignaturas:",
-                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                                     color = Color.DarkGray
                                 )
                             }
@@ -407,7 +415,7 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                             it.forEach { subject ->
                                 Text(
                                     text = "* $subject",
-                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light),
+                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, fontFamily = outfitRegular),
                                     color = Color.DarkGray,
                                     modifier = Modifier.padding(start = 24.dp)
                                 )
@@ -427,13 +435,13 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Biografía:",
-                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                                     color = Color.DarkGray
                                 )
                             }
                             Text(
                                 text = it,
-                                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light),
+                                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, fontFamily = outfitRegular),
                                 color = Color.DarkGray,
                                 modifier = Modifier.padding(start = 24.dp)
                             )
@@ -452,13 +460,13 @@ fun UsersDetailsDialog(user: User, onDismiss: () -> Unit) {
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Hobbies:",
-                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontFamily = outfitRegular),
                                     color = Color.DarkGray
                                 )
                             }
                             Text(
                                 text = it,
-                                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light),
+                                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light, fontFamily = outfitRegular),
                                 color = Color.DarkGray,
                                 modifier = Modifier.padding(start = 24.dp)
                             )
@@ -488,5 +496,4 @@ fun PaginationControls(currentPage: Int, totalPages: Int, onNext: () -> Unit, on
         }
     }
 }
-
 

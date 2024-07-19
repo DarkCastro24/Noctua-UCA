@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +66,9 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
     val fallbackUrl = "https://uca.edu.sv/"
     val gifResId = R.drawable.fondoooooo222
 
+    // Cargar la fuente personalizada
+    val outfitRegular = FontFamily(Font(R.font.outfitregular))
+
     LaunchedEffect(Unit) {
         while (true) {
             delay(1000)
@@ -93,7 +98,8 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp)
+                        .padding(vertical = 16.dp),
+                    fontFamily = outfitRegular
                 )
             }
 
@@ -121,14 +127,16 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
                             Text(
                                 text = "¿Has escuchado de la ICPC?",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = Color.White
+                                color = Color.White,
+                                fontFamily = outfitRegular
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "La ICPC es una competencia mundial donde equipos universitarios resuelven problemas de programación en un tiempo limitado, promoviendo habilidades algorítmicas y de trabajo en equipo.",
                                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
                                 color = Color.White,
-                                modifier = Modifier.padding(start = 4.dp)
+                                modifier = Modifier.padding(start = 4.dp),
+                                fontFamily = outfitRegular
                             )
                         }
 
@@ -165,7 +173,8 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp)
+                        .padding(vertical = 10.dp),
+                    fontFamily = outfitRegular
                 )
             }
 
@@ -202,14 +211,16 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
                                     Text(
                                         text = title,
                                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 14.sp, fontWeight = FontWeight.Bold),
-                                        color = MaterialTheme.colorScheme.primary
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontFamily = outfitRegular
                                     )
                                 }
                                 newsItem.body?.let { body ->
                                     Text(
                                         text = body,
                                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
-                                        color = MaterialTheme.colorScheme.primary
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontFamily = outfitRegular
                                     )
                                 }
                             }
@@ -227,7 +238,8 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp)
+                        .padding(vertical = 10.dp),
+                    fontFamily = outfitRegular
                 )
 
                 Box(
@@ -313,4 +325,3 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
 fun PreviewHomeScreen() {
     HomeScreen()
 }
-

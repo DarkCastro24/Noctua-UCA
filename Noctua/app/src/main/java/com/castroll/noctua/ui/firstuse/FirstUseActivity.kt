@@ -200,10 +200,10 @@ fun FirstUseContent(
         ) {
             item {
                 Image(
-                    painter = painterResource(id = R.drawable.icon_logo2),
+                    painter = painterResource(id = R.drawable.imagen2222),
                     contentDescription = "Logo",
                     modifier = Modifier
-                        .size(75.dp)
+                        .size(150.dp)
                         .padding(bottom = 8.dp),
                     colorFilter = ColorFilter.tint(Color(0xFF001F3F))
                 )

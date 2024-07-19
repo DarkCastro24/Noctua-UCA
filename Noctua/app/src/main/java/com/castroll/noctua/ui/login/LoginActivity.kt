@@ -151,10 +151,10 @@ class LoginActivity : ComponentActivity() {
                         .padding(top = spacing)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.icon_logo2),
+                        painter = painterResource(id = R.drawable.imagen2222),
                         contentDescription = null,
                         tint = navyBlue,
-                        modifier = Modifier.size(75.dp)
+                        modifier = Modifier.size(150.dp)
                     )
                     Text(
                         text = "Noctua UCA",

@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitInstance {
     private val retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:3500/api/")
+            .baseUrl(" https://noctua-web-service-rn7lfiej0-diego-castros-projects-acd0258d.vercel.app/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

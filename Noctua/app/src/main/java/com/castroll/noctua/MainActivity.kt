@@ -105,11 +105,11 @@ fun MainScreen(userViewModel: UserViewModel) {
                     },
                     actions = {
                         Icon(
-                            painter = painterResource(id = R.drawable.icon_logo2),
+                            painter = painterResource(id = R.drawable.imagen2222),
                             contentDescription = "App Logo",
-                            tint = Color.Unspecified,
+                            tint = Color.White,
                             modifier = Modifier
-                                .size(60.dp)
+                                .size(100.dp)
                                 .padding(end = 16.dp)
                         )
                     },
@@ -172,11 +172,11 @@ fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        painter = painterResource(id = R.drawable.icon_logo2),
+                        painter = painterResource(id = R.drawable.imagen2222),
                         contentDescription = "App Logo",
-                        tint = Color.Unspecified,
+                        tint = Color.White,
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(100.dp)
                             .align(Alignment.CenterVertically)
                     )
                 }

@@ -62,7 +62,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
     val imageCount = imageResources.size
     val configuration = LocalConfiguration.current
     val fallbackUrl = "https://uca.edu.sv/"
-    val gifResId = R.drawable.vid_fondo
+    val gifResId = R.drawable.fondoooooo222
 
     LaunchedEffect(Unit) {
         while (true) {

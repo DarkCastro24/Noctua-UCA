@@ -87,7 +87,7 @@ fun MainScreen(userViewModel: UserViewModel, windowSizeClass: WindowSizeClass) {
 
     ModalNavigationDrawer(
         drawerContent = {
-            Box(modifier = Modifier.width(250.dp)) { // Ajusta el ancho del menú
+            Box(modifier = Modifier.width(250.dp)) {
                 DrawerContent(navController, userViewModel, outfitRegular) {
                     scope.launch { drawerState.close() }
                 }
@@ -121,7 +121,7 @@ fun MainScreen(userViewModel: UserViewModel, windowSizeClass: WindowSizeClass) {
                             contentDescription = "App Logo",
                             tint = Color.White,
                             modifier = Modifier
-                                .size(if (isTablet) 60.dp else 40.dp) // Ajusta el tamaño para tabletas
+                                .size(if (isTablet) 85.dp else 70.dp)
                                 .padding(end = 16.dp)
                         )
                     },

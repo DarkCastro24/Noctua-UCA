@@ -10,6 +10,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -48,6 +52,7 @@ class MainActivity : ComponentActivity() {
         (application as MyApp).viewModelProvider[UserViewModel::class.java]
     }
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,7 +64,8 @@ class MainActivity : ComponentActivity() {
             } else {
                 setContent {
                     MyApplicationTheme {
-                        MainScreen(userViewModel)
+                        val windowSizeClass = calculateWindowSizeClass(this)
+                        MainScreen(userViewModel, windowSizeClass)
                     }
                 }
             }
@@ -69,70 +75,106 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(userViewModel: UserViewModel) {
+fun MainScreen(userViewModel: UserViewModel, windowSizeClass: WindowSizeClass) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    // Cargar la fuente personalizada
     val outfitRegular = FontFamily(Font(R.font.outfitregular))
 
-    ModalNavigationDrawer(
-        drawerContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.75f)
-                    .background(Color.White)
-            ) {
-                DrawerContent(navController, userViewModel, outfitRegular) {
-                    scope.launch { drawerState.close() }
-                }
+    val isTablet = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded || windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium
+
+    if (isTablet) {
+        // Tablet view with permanent drawer
+        PermanentNavigationDrawer(
+            drawerContent = {
+                DrawerContent(navController, userViewModel, outfitRegular)
             }
-        },
-        drawerState = drawerState
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Noctua UCA", style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)) },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            scope.launch { drawerState.open() }
-                        }) {
+        ) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Noctua UCA", style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)) },
+                        actions = {
                             Icon(
-                                Icons.Filled.Menu,
-                                contentDescription = "Menu",
+                                painter = painterResource(id = R.drawable.imagen2222),
+                                contentDescription = "App Logo",
                                 tint = Color.White,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier
+                                    .size(60.dp) // Adjusted size for tablet
+                                    .padding(end = 16.dp)
                             )
-                        }
-                    },
-                    actions = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.imagen2222),
-                            contentDescription = "App Logo",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .padding(end = 16.dp)
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color(0xFF001f3f),
+                            titleContentColor = Color.White
                         )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xFF001f3f),
-                        titleContentColor = Color.White
                     )
-                )
+                },
+                containerColor = MaterialTheme.colorScheme.background
+            ) { innerPadding ->
+                NavigationHost(navController, Modifier.padding(innerPadding), userViewModel, context, outfitRegular)
+            }
+        }
+    } else {
+        // Phone view with modal drawer
+        ModalNavigationDrawer(
+            drawerContent = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.75f)
+                        .background(Color.White)
+                ) {
+                    DrawerContent(navController, userViewModel, outfitRegular) {
+                        scope.launch { drawerState.close() }
+                    }
+                }
             },
-            containerColor = MaterialTheme.colorScheme.background
-        ) { innerPadding ->
-            NavigationHost(navController, Modifier.padding(innerPadding), userViewModel, context, outfitRegular)
+            drawerState = drawerState
+        ) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Noctua UCA", style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)) },
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                scope.launch { drawerState.open() }
+                            }) {
+                                Icon(
+                                    Icons.Filled.Menu,
+                                    contentDescription = "Menu",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        },
+                        actions = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.imagen2222),
+                                contentDescription = "App Logo",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(60.dp) // Adjusted size for phone
+                                    .padding(end = 16.dp)
+                            )
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color(0xFF001f3f),
+                            titleContentColor = Color.White
+                        )
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.background
+            ) { innerPadding ->
+                NavigationHost(navController, Modifier.padding(innerPadding), userViewModel, context, outfitRegular)
+            }
         }
     }
 }
 
 @Composable
-fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel, outfitRegular: FontFamily, onClose: () -> Unit) {
+fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel, outfitRegular: FontFamily, onClose: () -> Unit = {}) {
     val user by userViewModel.user.observeAsState()
     val username = user?.username ?: "Desconocido"
     val userType = user?.type ?: 1
@@ -181,7 +223,7 @@ fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel
                         contentDescription = "App Logo",
                         tint = Color.White,
                         modifier = Modifier
-                            .size(100.dp)
+                            .size(60.dp) // Adjusted size for tablet
                             .align(Alignment.CenterVertically)
                     )
                 }
@@ -203,7 +245,7 @@ fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel
             DrawerItem("Mapas", R.drawable.icon_maps, navController, "maps", onClose, outfitRegular)
             if (userType != 0) {
                 DrawerItem("QR", R.drawable.icon_qr, navController, "qr", onClose, outfitRegular)
-                DrawerItem("Pensum", R.drawable.icon_pensum, navController, "pensum", onClose, outfitRegular) // Cambiar icono posteriormente
+                DrawerItem("Pensum", R.drawable.icon_pensum, navController, "pensum", onClose, outfitRegular)
             }
         }
         DrawerItem("Cerrar Sesión", R.drawable.icon_signout, navController, "signout", onClose, outfitRegular, Modifier.align(Alignment.CenterHorizontally).padding(vertical = 8.dp))
@@ -228,9 +270,9 @@ fun DrawerItem(label: String, iconResId: Int, navController: NavHostController, 
         },
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 0.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp) // Adjusted padding for better touch targets
             .background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium)
-            .padding(vertical = 4.dp, horizontal = 8.dp)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
     )
 }
 
@@ -240,7 +282,7 @@ fun NavigationHost(
     modifier: Modifier = Modifier,
     userViewModel: UserViewModel,
     context: Context,
-    outfitRegular: FontFamily // Recibe la fuente como parámetro
+    outfitRegular: FontFamily
 ) {
     NavHost(navController = navController, startDestination = "home", modifier = modifier) {
         composable("home") { HomeScreen() }
@@ -256,3 +298,4 @@ fun NavigationHost(
         composable("signout") { SignOutScreen(context) }
     }
 }
+

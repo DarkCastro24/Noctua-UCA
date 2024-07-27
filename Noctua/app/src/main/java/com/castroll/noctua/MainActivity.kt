@@ -85,90 +85,55 @@ fun MainScreen(userViewModel: UserViewModel, windowSizeClass: WindowSizeClass) {
 
     val isTablet = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded || windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium
 
-    if (isTablet) {
-        // Tablet view with permanent drawer
-        PermanentNavigationDrawer(
-            drawerContent = {
-                DrawerContent(navController, userViewModel, outfitRegular)
-            }
-        ) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("Noctua UCA", style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)) },
-                        actions = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.imagen2222),
-                                contentDescription = "App Logo",
-                                tint = Color.White,
-                                modifier = Modifier
-                                    .size(60.dp) // Adjusted size for tablet
-                                    .padding(end = 16.dp)
-                            )
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color(0xFF001f3f),
-                            titleContentColor = Color.White
-                        )
-                    )
-                },
-                containerColor = MaterialTheme.colorScheme.background
-            ) { innerPadding ->
-                NavigationHost(navController, Modifier.padding(innerPadding), userViewModel, context, outfitRegular)
-            }
-        }
-    } else {
-        // Phone view with modal drawer
-        ModalNavigationDrawer(
-            drawerContent = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.75f)
-                        .background(Color.White)
-                ) {
-                    DrawerContent(navController, userViewModel, outfitRegular) {
-                        scope.launch { drawerState.close() }
-                    }
+    ModalNavigationDrawer(
+        drawerContent = {
+            Box(modifier = Modifier.width(250.dp)) { // Ajusta el ancho del menú
+                DrawerContent(navController, userViewModel, outfitRegular) {
+                    scope.launch { drawerState.close() }
                 }
-            },
-            drawerState = drawerState
-        ) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("Noctua UCA", style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)) },
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                scope.launch { drawerState.open() }
-                            }) {
-                                Icon(
-                                    Icons.Filled.Menu,
-                                    contentDescription = "Menu",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        },
-                        actions = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.imagen2222),
-                                contentDescription = "App Logo",
-                                tint = Color.White,
-                                modifier = Modifier
-                                    .size(60.dp) // Adjusted size for phone
-                                    .padding(end = 16.dp)
-                            )
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color(0xFF001f3f),
-                            titleContentColor = Color.White
-                        )
-                    )
-                },
-                containerColor = MaterialTheme.colorScheme.background
-            ) { innerPadding ->
-                NavigationHost(navController, Modifier.padding(innerPadding), userViewModel, context, outfitRegular)
             }
+        },
+        drawerState = drawerState,
+        gesturesEnabled = drawerState.isOpen,
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Noctua UCA", style = MaterialTheme.typography.bodyMedium.copy(fontFamily = outfitRegular)) },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            scope.launch {
+                                if (drawerState.isOpen) drawerState.close()
+                                else drawerState.open()
+                            }
+                        }) {
+                            Icon(
+                                Icons.Filled.Menu,
+                                contentDescription = "Menu",
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    },
+                    actions = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.imagen2222),
+                            contentDescription = "App Logo",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(if (isTablet) 60.dp else 40.dp) // Ajusta el tamaño para tabletas
+                                .padding(end = 16.dp)
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFF001f3f),
+                        titleContentColor = Color.White
+                    )
+                )
+            },
+            containerColor = MaterialTheme.colorScheme.background
+        ) { innerPadding ->
+            NavigationHost(navController, Modifier.padding(innerPadding), userViewModel, context, outfitRegular)
         }
     }
 }
@@ -223,7 +188,7 @@ fun DrawerContent(navController: NavHostController, userViewModel: UserViewModel
                         contentDescription = "App Logo",
                         tint = Color.White,
                         modifier = Modifier
-                            .size(60.dp) // Adjusted size for tablet
+                            .size(60.dp) // Ajusta el tamaño para tabletas
                             .align(Alignment.CenterVertically)
                     )
                 }
@@ -270,7 +235,7 @@ fun DrawerItem(label: String, iconResId: Int, navController: NavHostController, 
         },
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp) // Adjusted padding for better touch targets
+            .padding(horizontal = 8.dp, vertical = 4.dp) // Ajusta el padding para mejorar la accesibilidad
             .background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium)
             .padding(vertical = 8.dp, horizontal = 16.dp)
     )
@@ -298,4 +263,5 @@ fun NavigationHost(
         composable("signout") { SignOutScreen(context) }
     }
 }
+
 

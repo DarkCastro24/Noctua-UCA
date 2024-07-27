@@ -31,6 +31,7 @@ import com.castroll.noctua.data.remote.repository.*
 import com.castroll.noctua.utils.showToast
 import com.castroll.noctua.R
 
+
 @Composable
 fun PensumScreen(userViewModel: UserViewModel) {
     PensumContent(userViewModel = userViewModel)
@@ -402,7 +403,11 @@ fun AddSubjectsDialog(
 
     val availableSubjects = allSubjects.filterNot { materia ->
         val materiaName = materia.nombre
-        currentSubjects.any { it.split(" - ")[0] == materiaName }
+        currentSubjects.any { it.split(" - ")[0] == materiaName } ||
+                approvedSubjects.any {
+                    val parts = it.split(" - ")
+                    parts[0] == materiaName && (parts.getOrNull(1)?.toDoubleOrNull() ?: 0.0) > 6.0
+                }
     }
 
     AlertDialog(
@@ -531,6 +536,3 @@ fun showToast(context: Context, message: String) {
 fun groupBySubjects(materias: List<Materia>): Map<Int, List<Materia>> {
     return materias.groupBy { it.ciclo }
 }
-
-
-

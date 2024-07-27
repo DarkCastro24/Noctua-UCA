@@ -70,11 +70,11 @@ fun PensumContent(userViewModel: UserViewModel) {
     // Convert strings to lists and filter out empty subjects
     val allSubjects = user?.allSubjects?.flatMap { it.split(",").map(String::trim).filter { it.isNotEmpty() } } ?: emptyList()
     val currentSubjects = user?.currentSubjects?.flatMap { it.split(",").map(String::trim).filter { it.isNotEmpty() } } ?: emptyList()
-    val approvedSubjects = allSubjects
 
-    // Ensure allSubjectsGrades is a List<Double>
-    val allSubjectsGrades: List<Double> = approvedSubjects.mapNotNull {
-        it.split(" - ").getOrNull(1)?.toDoubleOrNull()
+    // Filter out subjects that are not approved (grade < 6.0)
+    val approvedSubjects = allSubjects.filter {
+        val grade = it.split(" - ").getOrNull(1)?.toDoubleOrNull() ?: 0.0
+        grade >= 6.0
     }
 
     // Calculate Total Units and Total Merit Units
@@ -284,7 +284,7 @@ fun PensumContent(userViewModel: UserViewModel) {
     if (showTotalSubjectsDialog.value) {
         SubjectListDialog(
             title = "Materias aprobadas",
-            subjects = allSubjects,
+            subjects = approvedSubjects,
             onDismissRequest = { showTotalSubjectsDialog.value = false },
             onRemoveSubject = { subject ->
                 subjectToConfirmRemove.value = subject
@@ -406,7 +406,7 @@ fun AddSubjectsDialog(
         currentSubjects.any { it.split(" - ")[0] == materiaName } ||
                 approvedSubjects.any {
                     val parts = it.split(" - ")
-                    parts[0] == materiaName && (parts.getOrNull(1)?.toDoubleOrNull() ?: 0.0) > 6.0
+                    parts[0] == materiaName && (parts.getOrNull(1)?.toDoubleOrNull() ?: 0.0) >= 6.0
                 }
     }
 
